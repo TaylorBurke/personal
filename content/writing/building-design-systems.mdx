@@ -1,0 +1,70 @@
+---
+title: "Building Design Systems That Scale"
+date: "2025-10-15"
+excerpt: "Lessons learned from building a design system used across five product teams — from token architecture to component governance."
+tags: ["Design Systems", "React", "TypeScript"]
+---
+
+# Building Design Systems That Scale
+
+Design systems are more than component libraries. They're shared languages that bridge design and engineering, enabling teams to build consistent, accessible, and beautiful products at scale.
+
+After leading the development of Meridian — a design system serving five product teams — here's what I've learned about building systems that actually get adopted.
+
+## Start With Tokens, Not Components
+
+The temptation is to jump straight into building a `Button` component. Resist it. Start with your design tokens: colors, spacing, typography, and elevation. These are the atoms that everything else is built from.
+
+```typescript
+// tokens/colors.ts
+export const colors = {
+  primary: {
+    50: '#f5f3ff',
+    100: '#ede9fe',
+    500: '#7c3aed',
+    600: '#6d28d9',
+    900: '#4c1d95',
+  },
+  // ...
+} as const;
+```
+
+Tokens create a shared vocabulary. When a designer says "primary-500," engineers know exactly what that means.
+
+## Composition Over Configuration
+
+The best components are composable, not configurable. Instead of a `Button` with 15 props, build primitives that compose together.
+
+```tsx
+<Button variant="primary" size="lg">
+  <Button.Icon>
+    <ArrowRight />
+  </Button.Icon>
+  Get Started
+</Button>
+```
+
+## Governance Matters
+
+A design system without governance is just a collection of components. Establish:
+
+- **Contribution guidelines** — how do new components get added?
+- **Deprecation policies** — how do you sunset old patterns?
+- **Review processes** — who approves changes?
+
+The system only works if everyone trusts it, and trust comes from clear processes.
+
+## Measure Adoption
+
+You can't improve what you don't measure. Track:
+
+- Component usage across products
+- Design-to-development handoff time
+- Accessibility audit scores
+- Developer satisfaction surveys
+
+These metrics tell you whether your system is actually helping.
+
+## The Takeaway
+
+Design systems are products, not projects. They need product thinking: user research (your users are designers and developers), roadmaps, iteration cycles, and long-term investment. Treat them accordingly, and they'll pay dividends across your entire organization.

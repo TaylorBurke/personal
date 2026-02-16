@@ -1,0 +1,76 @@
+---
+title: "Creative Coding with WebGL"
+date: "2025-08-22"
+excerpt: "Exploring the intersection of art and code — how WebGL opens up new possibilities for interactive visual experiences on the web."
+tags: ["WebGL", "Creative Coding", "Three.js"]
+---
+
+# Creative Coding with WebGL
+
+There's a magic in watching math become visual. Creative coding — the practice of writing code to create art — has always fascinated me. And with WebGL, the browser becomes a limitless canvas.
+
+## Why WebGL?
+
+WebGL gives you direct access to the GPU from JavaScript. This means you can render millions of particles, complex 3D scenes, and real-time shader effects — all running at 60fps in a browser tab.
+
+No plugins. No downloads. Just open a URL and experience it.
+
+## Getting Started with Shaders
+
+Shaders are small programs that run on the GPU. Fragment shaders, in particular, are where the visual magic happens. They run once for every pixel on screen, determining its color.
+
+```glsl
+// A simple gradient shader
+precision mediump float;
+
+uniform vec2 u_resolution;
+uniform float u_time;
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_resolution;
+
+  float r = sin(uv.x * 3.14 + u_time) * 0.5 + 0.5;
+  float g = sin(uv.y * 3.14 + u_time * 0.7) * 0.5 + 0.5;
+  float b = sin((uv.x + uv.y) * 3.14 + u_time * 1.3) * 0.5 + 0.5;
+
+  gl_FragColor = vec4(r, g, b, 1.0);
+}
+```
+
+This simple shader creates an animated, flowing gradient. Every pixel's color is calculated independently and in parallel — that's the power of the GPU.
+
+## Three.js as an Abstraction
+
+While raw WebGL is powerful, Three.js provides a friendlier API for 3D scenes:
+
+```typescript
+const geometry = new THREE.TorusKnotGeometry(1, 0.3, 128, 16);
+const material = new THREE.ShaderMaterial({
+  vertexShader,
+  fragmentShader,
+  uniforms: {
+    u_time: { value: 0 },
+  },
+});
+
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+```
+
+The beauty is that you can mix high-level Three.js abstractions with low-level custom shaders.
+
+## Performance Considerations
+
+Creative coding pushes browsers to their limits. Key tips:
+
+- **Use `requestAnimationFrame`** for smooth animation loops
+- **Minimize draw calls** by merging geometries
+- **Use instanced rendering** for repeated objects
+- **Profile with Chrome DevTools** GPU panel
+- **Provide fallbacks** for devices without WebGL support
+
+## Art Meets Code
+
+The most rewarding aspect of creative coding is the exploration. You start with a mathematical formula, tweak parameters, and discover unexpected beauty. It's a conversation between intention and emergence.
+
+Whether you're building immersive landing pages, data visualizations, or pure art — WebGL gives you a powerful, accessible medium to express creativity through code.

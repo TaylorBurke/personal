@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version:*)",
+      "Bash(npm:*)",
+      "WebSearch",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(start http://localhost:3000)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:getmystic.cards)",
+      "WebFetch(domain:cock-pit.vercel.app)",
+      "Bash(copy \"C:\\\\Users\\\\USER\\\\OneDrive\\\\Pictures\\\\Screenshots\\\\cockpit.png\" \"C:\\\\Users\\\\USER\\\\dev\\\\personal\\\\public\\\\images\\\\projects\\\\cockpit.png\")",
+      "Bash(gh repo view:*)",
+      "Bash(gh api:*)"
+    ]
+  }
+}
