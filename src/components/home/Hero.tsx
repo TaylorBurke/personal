@@ -1,73 +1,48 @@
 "use client";
 
-import Image from "next/image";
+import { useRef } from "react";
 import { motion } from "motion/react";
 import AnimatedText from "@/components/ui/AnimatedText";
 import RotatingTitle from "@/components/home/RotatingTitle";
+import AuroraBackground from "@/components/home/AuroraBackground";
+import ParallaxPortrait from "@/components/home/ParallaxPortrait";
+import { useMousePosition } from "@/hooks/useMousePosition";
 
-// Generate a true squircle (superellipse n=4) as an SVG polygon.
-// Formula: |x|^n + |y|^n = r^n  with n=4, mapped to 0-1 for objectBoundingBox.
-function generateSquirclePoints(n = 4, steps = 72): string {
-  return Array.from({ length: steps }, (_, i) => {
-    const angle = (2 * Math.PI * i) / steps;
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
-    const exp = 2 / n;
-    const x = 0.5 + 0.5 * Math.sign(cos) * Math.abs(cos) ** exp;
-    const y = 0.5 + 0.5 * Math.sign(sin) * Math.abs(sin) ** exp;
-    return `${x.toFixed(4)},${y.toFixed(4)}`;
-  }).join(" ");
-}
-
-const squirclePoints = generateSquirclePoints();
+/** Cinematic entrance beat timings (seconds) */
+const BEAT = {
+  aurora: 0,
+  portrait: 0.3,
+  title: 0.6,
+  heading: 0.8,
+  subtitle: 1.4,
+  cta: 1.7,
+  scroll: 2.2,
+} as const;
 
 export default function Hero() {
-  return (
-    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
-      {/* SVG clipPath definition for a true squircle */}
-      <svg width="0" height="0" className="absolute">
-        <defs>
-          <clipPath id="squircle" clipPathUnits="objectBoundingBox">
-            <polygon points={squirclePoints} />
-          </clipPath>
-        </defs>
-      </svg>
+  const sectionRef = useRef<HTMLElement>(null);
+  const { mouseX, mouseY } = useMousePosition(sectionRef);
 
-      {/* Background gradient */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full bg-violet/15 blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-coral/10 blur-[120px]" />
-      </div>
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden"
+    >
+      {/* Aurora animated background */}
+      <AuroraBackground delay={BEAT.aurora} />
 
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        {/* Portrait — true squircle mask */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto mb-8 relative inline-block"
-        >
-          {/* Glow ring behind the squircle */}
-          <div className="absolute -inset-1 rounded-[28%] bg-gradient-to-br from-violet to-coral opacity-50 blur-md" />
-          <div
-            className="relative shadow-2xl shadow-violet/20"
-            style={{ clipPath: "url(#squircle)" }}
-          >
-            <Image
-              src="/images/portrait.png"
-              alt="Taylor Burke"
-              width={280}
-              height={280}
-              priority
-              className="block object-cover object-center"
-            />
-          </div>
-        </motion.div>
+        {/* Parallax 3D portrait */}
+        <ParallaxPortrait
+          mouseX={mouseX}
+          mouseY={mouseY}
+          delay={BEAT.portrait}
+        />
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: BEAT.title }}
           className="mb-6"
         >
           <RotatingTitle />
@@ -77,13 +52,13 @@ export default function Hero() {
           text="Taylor Burke"
           as="h1"
           className="text-5xl sm:text-7xl lg:text-8xl font-heading font-bold tracking-tight bg-gradient-to-r from-snow via-violet-hover to-coral bg-clip-text text-transparent"
-          delay={0.2}
+          delay={BEAT.heading}
         />
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.6 }}
+          transition={{ delay: BEAT.subtitle, duration: 0.6 }}
           className="mt-6 text-lg sm:text-xl text-fog max-w-2xl mx-auto leading-relaxed"
         >
           I craft bold digital experiences at the intersection of design and
@@ -94,7 +69,7 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.3, duration: 0.6 }}
+          transition={{ delay: BEAT.cta, duration: 0.6 }}
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
@@ -115,7 +90,7 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.7 }}
+          transition={{ delay: BEAT.scroll }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
           <motion.div
