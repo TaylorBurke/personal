@@ -4,19 +4,19 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const builderTitles = [
   "Maker", "Tinkerer", "Dreamer", "Builder", "Crafter", "Coder", "Hacker",
-  "Sketcher", "Doodler", "Fixer", "Hatcher", "Grower", "Wielder", "Stacker",
-  "Linker", "Molder", "Splicer", "Wirer", "Patcher", "Forger", "Gluer",
-  "Nester", "Planter", "Rigger", "Bender", "Twister", "Looper", "Stitcher",
-  "Binder", "Caster", "Flinger", "Tapper", "Clicker", "Typer", "Dragger",
-  "Dropper", "Snapper", "Sander", "Piler", "Spacer", "Bridger", "Joiner",
+  "Sketcher", "Doodler", "Fixer", "Hatcher", "Grower", 
+  "Linker", "Molder", "Splicer", "Patcher", "Forger", "Gluer",
+  "Nester", "Planter", "Rigger", "Bender", "Looper", "Stitcher",
+  "Binder", "Caster", "Photo-bomber", "Clicker", "Typer",
+  "Snapper", "Sander", "Bridger", "Joiner",
   "Welder", "Weaver", "Knitter", "Spinner", "Winder", "Dabbler", "Fiddler",
-  "Prodder", "Nudger", "Thumper", "Wrapper", "Bundler", "Wrangler",
-  "Handler", "Whisperer", "Writer", "Inker", "Painter", "Seeker",
+  "Prodder", "Nudger", "Bundler", "Wrangler",
+  "Kindler", "Whisperer", "Writer", "Inker", "Painter", "Seeker",
   "Searcher", "Finder", "Solver", "Shaper", "Explorer", "Mapper",
-  "Pioneer", "Wanderer", "Rover", "Achiever", "Striver", "Thriver",
-  "Doer", "Mover", "Shaker", "Mixer", "Blender", "Composer", "Arranger",
-  "Improver", "Enhancer", "Polisher", "Originator", "Generator", "Producer",
-  "Creator",
+  "Wanderer", "Rover", "Striver", "High-fiver",
+  "Mover", "Shaker", "Mixer", "Blender", "Composer", "Arranger",
+  "Polisher", "Originator", "Generator", "Producer",
+  "Creator", "Sticker-slapper", "Head-scratcher", "Bug-slayer"
 ];
 
 function pickRandomBuilder(lastPick: string): string {
@@ -44,7 +44,11 @@ function getTitle(index: number, lastBuilder: string): { label: string; font: st
   }
 }
 
-export default function RotatingTitle() {
+interface RotatingTitleProps {
+  onCycle?: () => void;
+}
+
+export default function RotatingTitle({ onCycle }: RotatingTitleProps) {
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayedChars, setDisplayedChars] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -80,6 +84,7 @@ export default function RotatingTitle() {
       } else {
         return setTimeout(() => {
           setIsDeleting(false);
+          onCycle?.();
           setTitleIndex((i) => {
             const next = i + 1;
             const nextTitle = getTitle(next, lastBuilderRef.current);

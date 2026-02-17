@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useTransform, type MotionValue } from "motion/react";
+import { motion, useTransform, AnimatePresence, type MotionValue } from "motion/react";
 
 // Generate a true squircle (superellipse n=4) as an SVG polygon.
 function generateSquirclePoints(n = 4, steps = 72): string {
@@ -21,12 +21,14 @@ const squirclePoints = generateSquirclePoints();
 interface ParallaxPortraitProps {
   mouseX: MotionValue<number>;
   mouseY: MotionValue<number>;
+  src: string;
   delay?: number;
 }
 
 export default function ParallaxPortrait({
   mouseX,
   mouseY,
+  src,
   delay = 0.3,
 }: ParallaxPortraitProps) {
   // Map normalised -1…1 mouse to rotation (inverted for natural tilt)
@@ -68,17 +70,28 @@ export default function ParallaxPortrait({
           style={{ x: glowX, y: glowY }}
         />
         <div
-          className="relative shadow-2xl shadow-violet/20"
+          className="relative shadow-2xl shadow-violet/20 w-[280px] h-[280px]"
           style={{ clipPath: "url(#squircle)" }}
         >
-          <Image
-            src="/images/portrait.png"
-            alt="Taylor Burke"
-            width={280}
-            height={280}
-            priority
-            className="block object-cover object-center"
-          />
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={src}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={src}
+                alt="Taylor Burke"
+                width={280}
+                height={280}
+                priority
+                className="block w-full h-full object-cover object-center"
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </motion.div>
     </motion.div>

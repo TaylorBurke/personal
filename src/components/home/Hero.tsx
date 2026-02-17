@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useCallback, useState } from "react";
 import { motion } from "motion/react";
 import AnimatedText from "@/components/ui/AnimatedText";
 import RotatingTitle from "@/components/home/RotatingTitle";
@@ -19,9 +19,22 @@ const BEAT = {
   scroll: 2.2,
 } as const;
 
+const HERO_PHOTOS = [
+  "/images/portrait.png",
+  "/images/hero/climbing.png",
+  "/images/hero/trumpet.png",
+  "/images/hero/night.png",
+  "/images/hero/crew.png",
+];
+
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const { mouseX, mouseY } = useMousePosition(sectionRef);
+  const [photoIndex, setPhotoIndex] = useState(0);
+
+  const handleTitleCycle = useCallback(() => {
+    setPhotoIndex((i) => (i + 1) % HERO_PHOTOS.length);
+  }, []);
 
   return (
     <section
@@ -36,6 +49,7 @@ export default function Hero() {
         <ParallaxPortrait
           mouseX={mouseX}
           mouseY={mouseY}
+          src={HERO_PHOTOS[photoIndex]}
           delay={BEAT.portrait}
         />
 
@@ -45,7 +59,7 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: BEAT.title }}
           className="mb-6"
         >
-          <RotatingTitle />
+          <RotatingTitle onCycle={handleTitleCycle} />
         </motion.div>
 
         <AnimatedText
