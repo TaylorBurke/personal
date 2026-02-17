@@ -20,19 +20,4 @@ export const socialLinks = [
     href: "https://github.com/taylorburke",
     icon: "github",
   },
-  {
-    label: "LinkedIn",
-    href: "https://linkedin.com/in/taylorburke",
-    icon: "linkedin",
-  },
-  {
-    label: "X",
-    href: "https://x.com/taylorburke",
-    icon: "x",
-  },
-  {
-    label: "Email",
-    href: "mailto:hello@taylorburke.me",
-    icon: "email",
-  },
 ];
