@@ -117,9 +117,9 @@ export default function RotatingTitle({ onCycle }: RotatingTitleProps) {
   }, [tick]);
 
   return (
-    <div className="h-16 sm:h-20 flex items-center justify-center">
+    <div className="h-20 sm:h-24 flex items-center justify-center">
       <span
-        className={`text-5xl sm:text-7xl font-semibold tracking-wide bg-gradient-to-r from-violet to-coral bg-clip-text text-transparent ${current.italic ? "italic" : ""}`}
+        className={`text-5xl sm:text-7xl font-semibold tracking-wide leading-tight pb-1 bg-gradient-to-r from-violet to-coral bg-clip-text text-transparent decoration-clone ${current.italic ? "italic" : ""}`}
         style={{ fontFamily: current.font }}
       >
         {current.label.slice(0, displayedChars)}
