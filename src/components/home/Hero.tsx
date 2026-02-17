@@ -57,7 +57,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: BEAT.title }}
-          className="mb-6"
+          className="mb-3"
         >
           <RotatingTitle onCycle={handleTitleCycle} />
         </motion.div>
@@ -75,7 +75,7 @@ export default function Hero() {
           transition={{ delay: BEAT.subtitle, duration: 0.6 }}
           className="mt-6 text-lg sm:text-xl text-fog max-w-2xl mx-auto leading-relaxed"
         >
-          Code monkey with an eye for UX
+          Multi-disciplinary coder with an eye for UX. Versed in CI automation, cloud, and mobile.
         </motion.p>
 
         <motion.div
