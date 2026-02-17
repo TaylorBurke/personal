@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const builderTitles = [
   "Maker", "Tinkerer", "Dreamer", "Builder", "Crafter", "Coder", "Hacker",
-  "Sketcher", "Doodler", "Fixer", "Hatcher", "Grower", 
+  "Sketcher", "Doodler", "Fixer", "Hatcher", "Grower",
   "Linker", "Molder", "Splicer", "Patcher", "Forger", "Gluer",
   "Nester", "Planter", "Rigger", "Bender", "Looper", "Stitcher",
   "Binder", "Caster", "Photo-bomber", "Clicker", "Typer",
@@ -19,10 +19,15 @@ const builderTitles = [
   "Creator", "Sticker-slapper", "Head-scratcher", "Bug-slayer"
 ];
 
-function pickRandomBuilder(lastPick: string): string {
+const MOBILE_MAX_CHARS = 9;
+
+function pickRandomBuilder(lastPick: string, isMobile: boolean): string {
+  const pool = isMobile
+    ? builderTitles.filter((t) => t.length <= MOBILE_MAX_CHARS)
+    : builderTitles;
   let pick: string;
   do {
-    pick = builderTitles[Math.floor(Math.random() * builderTitles.length)];
+    pick = pool[Math.floor(Math.random() * pool.length)];
   } while (pick === lastPick);
   return pick;
 }
@@ -33,14 +38,14 @@ const PAUSE_AFTER_TYPE = 1800;
 const PAUSE_AFTER_DELETE = 400;
 
 // Fixed sequence: Designer, Developer, then random builder title repeating
-function getTitle(index: number, lastBuilder: string): { label: string; font: string; italic: boolean } {
+function getTitle(index: number, lastBuilder: string, isMobile: boolean): { label: string; font: string; italic: boolean } {
   const pos = index % 3;
   if (pos === 0) {
     return { label: "Designer", font: "var(--font-playfair)", italic: true };
   } else if (pos === 1) {
     return { label: "Developer", font: "var(--font-jetbrains-mono)", italic: false };
   } else {
-    return { label: pickRandomBuilder(lastBuilder), font: "var(--font-syne)", italic: false };
+    return { label: pickRandomBuilder(lastBuilder, isMobile), font: "var(--font-syne)", italic: false };
   }
 }
 
@@ -54,8 +59,17 @@ export default function RotatingTitle({ onCycle }: RotatingTitleProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
   const lastBuilderRef = useRef("");
+  const [isMobile, setIsMobile] = useState(false);
 
-  const [current, setCurrent] = useState(() => getTitle(0, ""));
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  const [current, setCurrent] = useState(() => getTitle(0, "", false));
 
   const tick = useCallback(() => {
     const fullText = current.label;
@@ -87,7 +101,7 @@ export default function RotatingTitle({ onCycle }: RotatingTitleProps) {
           onCycle?.();
           setTitleIndex((i) => {
             const next = i + 1;
-            const nextTitle = getTitle(next, lastBuilderRef.current);
+            const nextTitle = getTitle(next, lastBuilderRef.current, isMobile);
             if (next % 3 === 2) lastBuilderRef.current = nextTitle.label;
             setCurrent(nextTitle);
             return next;
@@ -95,7 +109,7 @@ export default function RotatingTitle({ onCycle }: RotatingTitleProps) {
         }, PAUSE_AFTER_DELETE);
       }
     }
-  }, [displayedChars, isDeleting, current.label]);
+  }, [displayedChars, isDeleting, current.label, isMobile, onCycle]);
 
   useEffect(() => {
     const timeout = tick();
@@ -103,15 +117,15 @@ export default function RotatingTitle({ onCycle }: RotatingTitleProps) {
   }, [tick]);
 
   return (
-    <div className="h-10 sm:h-12 flex items-center justify-center">
+    <div className="h-16 sm:h-20 flex items-center justify-center">
       <span
-        className={`text-xl sm:text-2xl font-semibold tracking-wide bg-gradient-to-r from-violet to-coral bg-clip-text text-transparent ${current.italic ? "italic" : ""}`}
+        className={`text-5xl sm:text-7xl font-semibold tracking-wide bg-gradient-to-r from-violet to-coral bg-clip-text text-transparent ${current.italic ? "italic" : ""}`}
         style={{ fontFamily: current.font }}
       >
         {current.label.slice(0, displayedChars)}
       </span>
       <span
-        className={`inline-block w-[2px] h-6 sm:h-7 bg-gradient-to-b from-violet to-coral ml-0.5 ${isIdle ? "animate-[blink_1s_ease-in-out_infinite]" : ""}`}
+        className={`inline-block w-[3px] h-12 sm:h-16 bg-gradient-to-b from-violet to-coral ml-1 ${isIdle ? "animate-[blink_1s_ease-in-out_infinite]" : ""}`}
       />
 
       <style jsx>{`
